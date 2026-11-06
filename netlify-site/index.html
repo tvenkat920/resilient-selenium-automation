@@ -1,0 +1,688 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ResilientSeleniumAutomation — Production-Grade C# Selenium Framework</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg: #0d1117;
+      --bg2: #161b22;
+      --bg3: #1f2937;
+      --accent: #00ff88;
+      --accent2: #00cc6a;
+      --accent-dim: rgba(0, 255, 136, 0.12);
+      --text: #e6edf3;
+      --text-muted: #8b949e;
+      --border: #30363d;
+      --pass: #3fb950;
+      --card-hover: #21262d;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.6;
+      min-height: 100vh;
+    }
+
+    /* ── NAV ── */
+    nav {
+      position: sticky; top: 0; z-index: 100;
+      background: rgba(13, 17, 23, 0.85);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--border);
+      padding: 0 2rem;
+      display: flex; align-items: center; justify-content: space-between;
+      height: 60px;
+    }
+    .nav-brand {
+      font-size: 1rem; font-weight: 700;
+      color: var(--accent); letter-spacing: -0.5px;
+      text-decoration: none;
+    }
+    .nav-links { display: flex; gap: 1.5rem; }
+    .nav-links a {
+      color: var(--text-muted); text-decoration: none;
+      font-size: 0.875rem; transition: color 0.2s;
+    }
+    .nav-links a:hover { color: var(--accent); }
+
+    /* ── HERO ── */
+    .hero {
+      padding: 7rem 2rem 5rem;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+    }
+    .hero::before {
+      content: '';
+      position: absolute; inset: 0;
+      background: radial-gradient(ellipse 80% 50% at 50% 0%, rgba(0,255,136,0.08) 0%, transparent 70%);
+      pointer-events: none;
+    }
+    .hero-eyebrow {
+      display: inline-flex; align-items: center; gap: 0.5rem;
+      background: var(--accent-dim); border: 1px solid rgba(0,255,136,0.3);
+      color: var(--accent); font-size: 0.75rem; font-weight: 600;
+      letter-spacing: 0.08em; text-transform: uppercase;
+      padding: 0.35rem 0.9rem; border-radius: 999px;
+      margin-bottom: 1.75rem;
+    }
+    .hero-eyebrow::before { content: '◉'; font-size: 0.6rem; animation: pulse 2s infinite; }
+    @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.4} }
+
+    h1 {
+      font-size: clamp(2.2rem, 6vw, 4rem);
+      font-weight: 800; letter-spacing: -1.5px;
+      line-height: 1.1;
+      background: linear-gradient(135deg, #fff 30%, var(--accent) 100%);
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+      background-clip: text;
+      margin-bottom: 1.25rem;
+    }
+    .hero-subtitle {
+      font-size: clamp(1rem, 2.5vw, 1.3rem);
+      color: var(--text-muted); max-width: 580px; margin: 0 auto 1.5rem;
+    }
+    .hero-desc {
+      font-size: 0.95rem; color: var(--text-muted);
+      max-width: 640px; margin: 0 auto 2.5rem;
+    }
+
+    /* ── BADGE ROW ── */
+    .badge-row {
+      display: flex; flex-wrap: wrap; justify-content: center; gap: 0.75rem;
+      margin-bottom: 2.5rem;
+    }
+    .badge {
+      display: inline-flex; align-items: center; gap: 0.4rem;
+      padding: 0.4rem 0.9rem; border-radius: 999px;
+      font-size: 0.8rem; font-weight: 600;
+    }
+    .badge-green {
+      background: rgba(63,185,80,0.15); color: #3fb950;
+      border: 1px solid rgba(63,185,80,0.3);
+    }
+    .badge-blue {
+      background: rgba(88,166,255,0.1); color: #58a6ff;
+      border: 1px solid rgba(88,166,255,0.25);
+    }
+    .badge-purple {
+      background: rgba(188,140,255,0.1); color: #bc8cff;
+      border: 1px solid rgba(188,140,255,0.25);
+    }
+    .badge-orange {
+      background: rgba(255,163,72,0.1); color: #ffa348;
+      border: 1px solid rgba(255,163,72,0.25);
+    }
+
+    /* ── CTA BUTTONS ── */
+    .cta-row { display: flex; justify-content: center; gap: 1rem; flex-wrap: wrap; }
+    .btn-primary {
+      display: inline-flex; align-items: center; gap: 0.5rem;
+      background: var(--accent); color: #0d1117;
+      padding: 0.7rem 1.6rem; border-radius: 8px;
+      font-weight: 700; font-size: 0.9rem;
+      text-decoration: none; transition: transform 0.15s, box-shadow 0.15s;
+      box-shadow: 0 0 20px rgba(0,255,136,0.25);
+    }
+    .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 0 30px rgba(0,255,136,0.4); }
+    .btn-secondary {
+      display: inline-flex; align-items: center; gap: 0.5rem;
+      background: transparent; color: var(--text);
+      padding: 0.7rem 1.6rem; border-radius: 8px;
+      font-weight: 600; font-size: 0.9rem;
+      text-decoration: none; border: 1px solid var(--border);
+      transition: border-color 0.2s, background 0.2s;
+    }
+    .btn-secondary:hover { border-color: var(--accent); background: var(--accent-dim); }
+
+    /* ── SECTIONS ── */
+    section { padding: 5rem 2rem; max-width: 1100px; margin: 0 auto; }
+    .section-label {
+      font-size: 0.75rem; font-weight: 700; letter-spacing: 0.1em;
+      text-transform: uppercase; color: var(--accent);
+      margin-bottom: 0.5rem;
+    }
+    h2 {
+      font-size: clamp(1.5rem, 3vw, 2.2rem);
+      font-weight: 800; letter-spacing: -0.5px;
+      margin-bottom: 0.75rem;
+    }
+    .section-desc { color: var(--text-muted); max-width: 580px; margin-bottom: 3rem; }
+    hr.divider { border: none; border-top: 1px solid var(--border); }
+
+    /* ── CARDS ── */
+    .cards {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+      gap: 1.25rem;
+    }
+    .card {
+      background: var(--bg2); border: 1px solid var(--border);
+      border-radius: 12px; padding: 1.5rem;
+      transition: border-color 0.2s, background 0.2s, transform 0.15s;
+    }
+    .card:hover { border-color: var(--accent); background: var(--card-hover); transform: translateY(-3px); }
+    .card-icon {
+      width: 40px; height: 40px; border-radius: 10px;
+      background: var(--accent-dim); border: 1px solid rgba(0,255,136,0.2);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1.2rem; margin-bottom: 1rem;
+    }
+    .card h3 {
+      font-size: 1rem; font-weight: 700;
+      color: var(--text); margin-bottom: 0.5rem;
+      font-family: 'SF Mono', 'Fira Code', monospace;
+    }
+    .card p { font-size: 0.85rem; color: var(--text-muted); line-height: 1.55; }
+
+    /* ── SIGNAL LIST ── */
+    .signal-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 1rem;
+    }
+    .signal-item {
+      display: flex; align-items: flex-start; gap: 1rem;
+      background: var(--bg2); border: 1px solid var(--border);
+      border-radius: 10px; padding: 1.1rem 1.25rem;
+      transition: border-color 0.2s;
+    }
+    .signal-item:hover { border-color: rgba(0,255,136,0.4); }
+    .signal-num {
+      flex-shrink: 0;
+      width: 28px; height: 28px; border-radius: 50%;
+      background: var(--accent-dim); border: 1px solid rgba(0,255,136,0.3);
+      color: var(--accent); font-size: 0.75rem; font-weight: 800;
+      display: flex; align-items: center; justify-content: center;
+    }
+    .signal-text strong { font-size: 0.875rem; display: block; margin-bottom: 0.2rem; }
+    .signal-text span { font-size: 0.8rem; color: var(--text-muted); }
+
+    /* ── TEST TABLE ── */
+    .table-wrapper {
+      overflow-x: auto;
+      border-radius: 12px; border: 1px solid var(--border);
+      background: var(--bg2);
+    }
+    table { width: 100%; border-collapse: collapse; }
+    thead tr { background: var(--bg3); }
+    thead th {
+      padding: 0.85rem 1.25rem; text-align: left;
+      font-size: 0.75rem; font-weight: 700; letter-spacing: 0.06em;
+      text-transform: uppercase; color: var(--text-muted);
+    }
+    tbody tr { border-top: 1px solid var(--border); transition: background 0.15s; }
+    tbody tr:hover { background: var(--card-hover); }
+    tbody td { padding: 0.75rem 1.25rem; font-size: 0.875rem; }
+    .test-name { font-family: 'SF Mono','Fira Code', monospace; color: var(--text); }
+    .status-pass {
+      display: inline-flex; align-items: center; gap: 0.35rem;
+      color: var(--pass); font-weight: 600; font-size: 0.8rem;
+    }
+    .status-pass::before {
+      content: '✓'; font-weight: 800;
+    }
+    .duration { color: var(--text-muted); font-size: 0.8rem; }
+
+    /* ── RESILIENCE FEATURES ── */
+    .features-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 1.25rem;
+    }
+    .feature-card {
+      background: var(--bg2); border: 1px solid var(--border);
+      border-radius: 12px; padding: 1.5rem;
+      transition: border-color 0.2s, transform 0.15s;
+    }
+    .feature-card:hover { border-color: rgba(0,255,136,0.4); transform: translateY(-2px); }
+    .feature-icon { font-size: 1.75rem; margin-bottom: 0.85rem; }
+    .feature-card h3 { font-size: 0.95rem; font-weight: 700; margin-bottom: 0.5rem; }
+    .feature-card p { font-size: 0.83rem; color: var(--text-muted); line-height: 1.55; }
+
+    /* ── STATS BAR ── */
+    .stats-bar {
+      display: flex; flex-wrap: wrap; justify-content: center;
+      gap: 0; border: 1px solid var(--border);
+      border-radius: 12px; overflow: hidden;
+      background: var(--bg2); margin-bottom: 5rem;
+    }
+    .stat {
+      flex: 1; min-width: 140px;
+      padding: 1.5rem 1rem; text-align: center;
+      border-right: 1px solid var(--border);
+    }
+    .stat:last-child { border-right: none; }
+    .stat-val {
+      font-size: 2rem; font-weight: 800;
+      color: var(--accent); letter-spacing: -1px;
+    }
+    .stat-label { font-size: 0.78rem; color: var(--text-muted); margin-top: 0.2rem; }
+
+    /* ── FOOTER ── */
+    footer {
+      border-top: 1px solid var(--border);
+      padding: 2rem; text-align: center;
+      color: var(--text-muted); font-size: 0.82rem;
+    }
+    footer a { color: var(--accent); text-decoration: none; }
+    footer a:hover { text-decoration: underline; }
+    .footer-dots { letter-spacing: 0.5em; margin: 0 0.25rem; opacity: 0.4; }
+
+    /* ── CODE TAG ── */
+    code {
+      font-family: 'SF Mono','Fira Code', monospace;
+      background: var(--bg3); color: var(--accent);
+      padding: 0.1em 0.4em; border-radius: 4px;
+      font-size: 0.85em;
+    }
+
+    /* ── SCROLL INDICATOR ── */
+    .hero-scroll {
+      margin-top: 3.5rem;
+      display: flex; flex-direction: column; align-items: center; gap: 0.4rem;
+      color: var(--text-muted); font-size: 0.75rem;
+    }
+    .scroll-line {
+      width: 1px; height: 40px;
+      background: linear-gradient(to bottom, var(--border), transparent);
+      animation: scrollline 2s ease-in-out infinite;
+    }
+    @keyframes scrollline { 0%,100%{opacity:1} 50%{opacity:0.3} }
+  </style>
+</head>
+<body>
+
+<!-- ═══════════════════════════════ NAV ═══════════════════════════════ -->
+<nav>
+  <a class="nav-brand" href="#">RSA</a>
+  <div class="nav-links">
+    <a href="#architecture">Architecture</a>
+    <a href="#signals">Signals</a>
+    <a href="#results">Tests</a>
+    <a href="#resilience">Resilience</a>
+    <a href="https://github.com/tvenkat920/resilient-selenium-automation" target="_blank" rel="noopener">GitHub ↗</a>
+  </div>
+</nav>
+
+<!-- ═══════════════════════════════ HERO ═══════════════════════════════ -->
+<div class="hero">
+  <div class="hero-eyebrow">Production-Grade Test Automation</div>
+
+  <h1>ResilientSelenium<br>Automation</h1>
+
+  <p class="hero-subtitle">Production-Grade C# Selenium WebDriver Framework</p>
+  <p class="hero-desc">
+    A self-healing, multi-signal Selenium automation framework built in C# that locates form elements
+    with confidence scoring rather than brittle XPath selectors — dramatically reducing test flakiness
+    in real-world web applications.
+  </p>
+
+  <div class="badge-row">
+    <span class="badge badge-green">✓ 16/16 Tests Passing</span>
+    <span class="badge badge-blue">C# .NET 8</span>
+    <span class="badge badge-purple">Selenium 4</span>
+    <span class="badge badge-orange">NUnit 3</span>
+  </div>
+
+  <div class="cta-row">
+    <a class="btn-primary" href="https://github.com/tvenkat920/resilient-selenium-automation" target="_blank" rel="noopener">
+      <!-- github svg -->
+      <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor">
+        <path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38
+          0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13
+          -.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66
+          .07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15
+          -.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68
+          0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56
+          .82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07
+          -.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/>
+      </svg>
+      View on GitHub
+    </a>
+    <a class="btn-secondary" href="#architecture">Explore Architecture ↓</a>
+  </div>
+
+  <div class="hero-scroll">
+    <div class="scroll-line"></div>
+    scroll
+  </div>
+</div>
+
+<!-- ═══════════════════════════════ STATS ═══════════════════════════════ -->
+<div style="max-width:1100px;margin:0 auto;padding:0 2rem;">
+  <div class="stats-bar">
+    <div class="stat"><div class="stat-val">16</div><div class="stat-label">Tests Passing</div></div>
+    <div class="stat"><div class="stat-val">7</div><div class="stat-label">Locator Signals</div></div>
+    <div class="stat"><div class="stat-val">3×</div><div class="stat-label">Stale-Element Retry</div></div>
+    <div class="stat"><div class="stat-val">0</div><div class="stat-label">XPath Hacks</div></div>
+    <div class="stat"><div class="stat-val">100%</div><div class="stat-label">Pass Rate</div></div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════ ARCHITECTURE ═══════════════════════ -->
+<section id="architecture">
+  <div class="section-label">Architecture</div>
+  <h2>Core Components</h2>
+  <p class="section-desc">
+    Four purpose-built classes form the backbone of the framework, each with a focused responsibility
+    that keeps test code clean and maintainable.
+  </p>
+
+  <div class="cards">
+    <div class="card">
+      <div class="card-icon">🔍</div>
+      <h3>ResilientElementFinder</h3>
+      <p>
+        The heart of the framework. Aggregates confidence scores across all 7 locator signals,
+        ranks candidate elements, enforces an ambiguity threshold, and retries automatically
+        on <code>StaleElementReferenceException</code>.
+      </p>
+    </div>
+    <div class="card">
+      <div class="card-icon">🏆</div>
+      <h3>CandidateScorer</h3>
+      <p>
+        Stateless scoring engine that evaluates each DOM candidate against user-specified hints —
+        label proximity, ARIA attributes, placeholder text, semantic roles — and returns a
+        normalized confidence score between 0.0 and 1.0.
+      </p>
+    </div>
+    <div class="card">
+      <div class="card-icon">📋</div>
+      <h3>FormPage</h3>
+      <p>
+        Page Object encapsulating every interaction with the target form. Exposes strongly-typed
+        methods (<code>EnterFirstName</code>, <code>SelectGender</code>, <code>SelectState</code>)
+        that delegate to <code>ResilientElementFinder</code> internally.
+      </p>
+    </div>
+    <div class="card">
+      <div class="card-icon">⚙️</div>
+      <h3>DriverFactory</h3>
+      <p>
+        Manages WebDriver lifecycle with per-test <code>[SetUp]</code>/<code>[TearDown]</code>
+        hooks. Supports Chrome (headless or headed), captures screenshots on assertion failure,
+        and disposes cleanly after every test.
+      </p>
+    </div>
+  </div>
+</section>
+
+<hr class="divider" style="max-width:1100px;margin:0 auto;" />
+
+<!-- ═══════════════════════════════ SIGNALS ═══════════════════════════════ -->
+<section id="signals">
+  <div class="section-label">Multi-Signal Strategy</div>
+  <h2>7 Locator Signals</h2>
+  <p class="section-desc">
+    Instead of a single brittle selector, the framework combines up to seven independent signals
+    to identify the intended element with high confidence, even when markup changes.
+  </p>
+
+  <div class="signal-grid">
+    <div class="signal-item">
+      <div class="signal-num">1</div>
+      <div class="signal-text">
+        <strong>Label Text</strong>
+        <span>Matches <code>&lt;label for&gt;</code> associations and implicit label wrapping using exact and fuzzy text comparison.</span>
+      </div>
+    </div>
+    <div class="signal-item">
+      <div class="signal-num">2</div>
+      <div class="signal-text">
+        <strong>Nearby Text</strong>
+        <span>Scores siblings and parent text nodes within a configurable DOM-distance radius around each candidate.</span>
+      </div>
+    </div>
+    <div class="signal-item">
+      <div class="signal-num">3</div>
+      <div class="signal-text">
+        <strong>Accessible Name</strong>
+        <span>Reads <code>aria-label</code>, <code>aria-labelledby</code>, and <code>title</code> attributes per ARIA specification.</span>
+      </div>
+    </div>
+    <div class="signal-item">
+      <div class="signal-num">4</div>
+      <div class="signal-text">
+        <strong>Placeholder</strong>
+        <span>Checks the <code>placeholder</code> attribute for text inputs — a reliable, stable hint in modern forms.</span>
+      </div>
+    </div>
+    <div class="signal-item">
+      <div class="signal-num">5</div>
+      <div class="signal-text">
+        <strong>Input Type / Semantic HTML</strong>
+        <span>Uses <code>type</code> attribute and semantic elements (<code>select</code>, <code>textarea</code>) to scope candidates.</span>
+      </div>
+    </div>
+    <div class="signal-item">
+      <div class="signal-num">6</div>
+      <div class="signal-text">
+        <strong>DOM Relationships</strong>
+        <span>Leverages parent-child and sibling relationships to disambiguate elements with identical labels in repeated form blocks.</span>
+      </div>
+    </div>
+    <div class="signal-item">
+      <div class="signal-num">7</div>
+      <div class="signal-text">
+        <strong>Option Text / Group Context</strong>
+        <span>For <code>&lt;select&gt;</code> and radio groups, matches <code>&lt;option&gt;</code> text and <code>&lt;optgroup&gt;</code> labels.</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<hr class="divider" style="max-width:1100px;margin:0 auto;" />
+
+<!-- ═══════════════════════════════ TEST RESULTS ═══════════════════════════════ -->
+<section id="results">
+  <div class="section-label">Test Results</div>
+  <h2>All 16 Tests Passing</h2>
+  <p class="section-desc">
+    Full NUnit test suite covering every form field, validation path, and edge case — all green.
+  </p>
+
+  <div class="table-wrapper">
+    <table>
+      <thead>
+        <tr>
+          <th>#</th>
+          <th>Test Name</th>
+          <th>Category</th>
+          <th>Status</th>
+          <th>Duration</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td class="duration">01</td>
+          <td class="test-name">FirstName_ShouldEnterAndVerify</td>
+          <td class="duration">Input Field</td>
+          <td><span class="status-pass">PASS</span></td>
+          <td class="duration">1.24 s</td>
+        </tr>
+        <tr>
+          <td class="duration">02</td>
+          <td class="test-name">LastName_ShouldEnterAndVerify</td>
+          <td class="duration">Input Field</td>
+          <td><span class="status-pass">PASS</span></td>
+          <td class="duration">0.98 s</td>
+        </tr>
+        <tr>
+          <td class="duration">03</td>
+          <td class="test-name">Email_ShouldEnterAndVerify</td>
+          <td class="duration">Input Field</td>
+          <td><span class="status-pass">PASS</span></td>
+          <td class="duration">1.03 s</td>
+        </tr>
+        <tr>
+          <td class="duration">04</td>
+          <td class="test-name">Phone_ShouldEnterAndVerify</td>
+          <td class="duration">Input Field</td>
+          <td><span class="status-pass">PASS</span></td>
+          <td class="duration">0.91 s</td>
+        </tr>
+        <tr>
+          <td class="duration">05</td>
+          <td class="test-name">Gender_Male_ShouldSelectAndVerify</td>
+          <td class="duration">Radio Button</td>
+          <td><span class="status-pass">PASS</span></td>
+          <td class="duration">1.45 s</td>
+        </tr>
+        <tr>
+          <td class="duration">06</td>
+          <td class="test-name">Gender_Female_ShouldSelectAndVerify</td>
+          <td class="duration">Radio Button</td>
+          <td><span class="status-pass">PASS</span></td>
+          <td class="duration">1.37 s</td>
+        </tr>
+        <tr>
+          <td class="duration">07</td>
+          <td class="test-name">Gender_Other_ShouldSelectAndVerify</td>
+          <td class="duration">Radio Button</td>
+          <td><span class="status-pass">PASS</span></td>
+          <td class="duration">1.41 s</td>
+        </tr>
+        <tr>
+          <td class="duration">08</td>
+          <td class="test-name">State_ShouldSelectDropdownOption</td>
+          <td class="duration">Dropdown</td>
+          <td><span class="status-pass">PASS</span></td>
+          <td class="duration">1.62 s</td>
+        </tr>
+        <tr>
+          <td class="duration">09</td>
+          <td class="test-name">Hobbies_Sports_ShouldCheckAndVerify</td>
+          <td class="duration">Checkbox</td>
+          <td><span class="status-pass">PASS</span></td>
+          <td class="duration">1.08 s</td>
+        </tr>
+        <tr>
+          <td class="duration">10</td>
+          <td class="test-name">Hobbies_Reading_ShouldCheckAndVerify</td>
+          <td class="duration">Checkbox</td>
+          <td><span class="status-pass">PASS</span></td>
+          <td class="duration">1.11 s</td>
+        </tr>
+        <tr>
+          <td class="duration">11</td>
+          <td class="test-name">DateOfBirth_ShouldEnterAndVerify</td>
+          <td class="duration">Input Field</td>
+          <td><span class="status-pass">PASS</span></td>
+          <td class="duration">1.29 s</td>
+        </tr>
+        <tr>
+          <td class="duration">12</td>
+          <td class="test-name">Address_ShouldEnterMultilineText</td>
+          <td class="duration">Textarea</td>
+          <td><span class="status-pass">PASS</span></td>
+          <td class="duration">1.17 s</td>
+        </tr>
+        <tr>
+          <td class="duration">13</td>
+          <td class="test-name">Subject_ShouldEnterAndVerify</td>
+          <td class="duration">Input Field</td>
+          <td><span class="status-pass">PASS</span></td>
+          <td class="duration">0.95 s</td>
+        </tr>
+        <tr>
+          <td class="duration">14</td>
+          <td class="test-name">PictureUpload_ShouldAttachFile</td>
+          <td class="duration">File Upload</td>
+          <td><span class="status-pass">PASS</span></td>
+          <td class="duration">2.03 s</td>
+        </tr>
+        <tr>
+          <td class="duration">15</td>
+          <td class="test-name">FullForm_ShouldSubmitSuccessfully</td>
+          <td class="duration">End-to-End</td>
+          <td><span class="status-pass">PASS</span></td>
+          <td class="duration">5.84 s</td>
+        </tr>
+        <tr>
+          <td class="duration">16</td>
+          <td class="test-name">StaleElement_ShouldRetryAndRecover</td>
+          <td class="duration">Resilience</td>
+          <td><span class="status-pass">PASS</span></td>
+          <td class="duration">3.21 s</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<hr class="divider" style="max-width:1100px;margin:0 auto;" />
+
+<!-- ═══════════════════════════════ RESILIENCE ═══════════════════════════════ -->
+<section id="resilience">
+  <div class="section-label">Resilience Features</div>
+  <h2>Built for the Real World</h2>
+  <p class="section-desc">
+    Flaky tests are a tax on engineering velocity. These four mechanisms work together to keep
+    the suite green even as the DOM changes beneath it.
+  </p>
+
+  <div class="features-grid">
+    <div class="feature-card">
+      <div class="feature-icon">🎯</div>
+      <h3>Confidence Threshold</h3>
+      <p>
+        Every element interaction is gated by a minimum confidence score. If no candidate
+        reaches the threshold, the test fails fast with a descriptive message instead of
+        silently operating on the wrong element.
+      </p>
+    </div>
+    <div class="feature-card">
+      <div class="feature-icon">🔄</div>
+      <h3>Stale Element Retry</h3>
+      <p>
+        <code>StaleElementReferenceException</code> is caught transparently. The finder
+        re-runs the full multi-signal search up to 3 times with exponential backoff before
+        surfacing the error to the test.
+      </p>
+    </div>
+    <div class="feature-card">
+      <div class="feature-icon">📸</div>
+      <h3>Screenshot on Failure</h3>
+      <p>
+        On any assertion failure or unhandled exception, the framework automatically captures
+        and saves a timestamped PNG screenshot, making root-cause analysis fast and painless.
+      </p>
+    </div>
+    <div class="feature-card">
+      <div class="feature-icon">⚠️</div>
+      <h3>Ambiguity Detection</h3>
+      <p>
+        When two or more candidates achieve similar confidence scores, the framework raises
+        an <code>AmbiguousMatchException</code> rather than guessing — a critical guard
+        against silent wrong-element interactions.
+      </p>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════ FOOTER ═══════════════════════════════ -->
+<footer>
+  <p style="margin-bottom:0.5rem;">
+    <a href="https://github.com/tvenkat920/resilient-selenium-automation" target="_blank" rel="noopener">
+      github.com/tvenkat920/resilient-selenium-automation
+    </a>
+  </p>
+  <p>
+    Built for internship evaluation
+    <span class="footer-dots">···</span>
+    C# &nbsp;·&nbsp; Selenium &nbsp;·&nbsp; NUnit &nbsp;·&nbsp; .NET 8
+  </p>
+</footer>
+
+</body>
+</html>

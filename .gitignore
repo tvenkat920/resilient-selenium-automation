@@ -1,0 +1,45 @@
+## Build results
+[Dd]ebug/
+[Dd]ebugPublic/
+[Rr]elease/
+[Rr]eleases/
+x64/
+x86/
+[Aa][Rr][Mm]/
+[Aa][Rr][Mm]64/
+bld/
+[Bb]in/
+[Oo]bj/
+[Ll]og/
+[Ll]ogs/
+
+## Visual Studio
+.vs/
+*.suo
+*.user
+*.userosscache
+*.sln.docstates
+
+## Rider & ReSharper
+.idea/
+*.DotSettings.user
+
+## Test Results
+TestResults/
+*.trx
+*.coverage
+*.coveragexml
+
+## Chrome / Driver binaries
+chromedriver*
+geckodriver*
+msedgedriver*
+
+## Environment & Secrets
+appsettings.Development.json
+*.local.json
+.env
+
+## Temporary inspection files
+page.html
+

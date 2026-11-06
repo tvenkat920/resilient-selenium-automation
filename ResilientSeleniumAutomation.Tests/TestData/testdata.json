@@ -1,0 +1,18 @@
+[
+  {
+    "FirstName": "Alexander",
+    "Gender": "Male",
+    "State": "United States"
+  },
+  {
+    "FirstName": "Eleanor",
+    "Gender": "Female",
+    "State": "India"
+  },
+  {
+    "FirstName": "Jordan",
+    "Gender": "Transgender",
+    "State": "Germany"
+  }
+]
+
